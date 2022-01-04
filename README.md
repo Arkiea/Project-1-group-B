@@ -1,6 +1,8 @@
 # Fear and Greed
 ### The Impacts of Covid-19 on worldwide economic performance, social sentiment and asset prices
 
+![Fear and Greed](https://www.simplifiedblogs.com/wp-content/uploads/2021/07/Red-and-Black-Dark-Gamer-Sports-YouTube-Outro-12-1.jpg)
+
 ***Authors: Aidan Laird, Arkie Ariyana, Mitchell Langdon***
 
 January 2022
@@ -25,3 +27,11 @@ The following report combines Covid-19 data alongside key economic data, social 
 | GDP and Inflation Data | [Trading Economics](https://tradingeconomics.com/)| Static (CSV)| 
 | Cryptocurrency Data | [CoinGecko](https://www.coingecko.com/en) | API Connection |
 | Fear Greed Index | [RapidAPI](https://rapidapi.com/rpi4gx/api/fear-and-greed-index/details) | API Connection |
+
+## Methods Utilised in this report
+
+The report utilises the primary python modules (e.g. pandas, numpy, datetime etc). To make use of additional Python modules, the team have utilised Python *Dash*; an interactive dashboarding module to better present data that can rival its Business Intelligence counterparts (Tableau, Power BI). The use of *fbprohpet*, a time-series forecasting tool was also utilised to broadly predict the direction of specific assets relating to equities and cryptocurrencies.
+
+## How the dashboard operates
+
+The dashboard is operated locally, meaning that accessibility is a challenge given the creators' computers must be running in order to use the tool. 
