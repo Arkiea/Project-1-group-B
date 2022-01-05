@@ -32,6 +32,14 @@ The following report combines Covid-19 data alongside key economic data, social 
 
 The report utilises the primary python modules (e.g. pandas, numpy, datetime etc). To make use of additional Python modules, the team have utilised Python *Dash*; an interactive dashboarding module to better present data that can rival its Business Intelligence counterparts (Tableau, Power BI). The use of *fbprohpet*, a time-series forecasting tool was also utilised to broadly predict the direction of specific assets relating to equities and cryptocurrencies.
 
+## Approach
+
+To produce the final dashboard, the team conducted a phased approach to preparing the final dashboard output:
+
+ (1) Data cleaning and preparation: the final dashboard uses data from various different data sources and therefore needed to be prepared accordingly. This can be identifed in the *Data Preparation.ipynb* file.
+
+ (2) Structuring the layout of the dashboard/report: using Python's *Dash* module, the group produced a single page layout to answer separate questions related to a particular piece of analysis. 
+
 ## How the dashboard operates
 
 The dashboard is operated locally, meaning that accessibility is a challenge given the creators' computers must be running in order to use the tool. 
