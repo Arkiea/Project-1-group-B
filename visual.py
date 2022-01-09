@@ -78,7 +78,7 @@ def create_forecast(data, start_date, asset_name):
                   layout= layout)
     
     # Produce figure
-    py.offline.iplot(figure)
+    return py.offline.iplot(figure)
 
 # Define the chart for top and bottom performers over the Covid-19 Period
 def top_bottom_performers(data):
@@ -97,22 +97,125 @@ def top_bottom_performers(data):
     # Return the figure
     return performance
 
-# Create the function for assessing fear and greed index vs cryptocurrencies (need to understand how to combine charts to compare)
-def fear_greed_crypto(data):
+# Create function for assessing correlation between cryto and FG index
+def fear_greed_crypto(data, crypto):
+    
+    # Create figure with secondary y-axis
+    crypto_fg = make_subplots(specs = [[{"secondary_y" : True}]])
+
+    # Add traces
+    crypto_fg.add_trace(
+        go.Scatter(x = data['Date'], y = data[crypto], name = "Price ($USD)"),
+        secondary_y = False,
+    )
+
+    crypto_fg.add_trace(
+        go.Scatter(x = data['Date'], y = data['Moving Avg FG Index'], name = "Fear Greed Index Value"),
+        secondary_y=True,
+    )
+
+    # Add figure title
+    crypto_fg.update_layout(
+        title_text = "Correlation between " + crypto + ' and the Fear and Greed Index'
+    )
+
+    # Set x-axis title
+    crypto_fg.update_xaxes(title_text = "Date")
+    
+    # Add in covid reference band
+    crypto_fg.add_vrect(x0 = "2020-02-01", x1 = "2020-05-30", 
+              annotation_text = "Peak Covid Impact", annotation_position = "top left",
+              fillcolor = "red", opacity = 0.25, line_width = 0)
+
+    # Set y-axes titles
+    crypto_fg.update_yaxes(title_text = "<b>Value</b> $USD", secondary_y = False)
+    crypto_fg.update_yaxes(title_text = "<b>Fear Greed</b> Value", secondary_y = True)
+
+    return crypto_fg.show()
+
+# Create the function for assessing fear and greed index vs cryptocurrencies
+def fear_greed_crypto(data, crypto, crypto_two):
     
     # Create the plot
     crypto_plt = data.hvplot.line(x = 'Date', 
-                                     y = 'Bitcoin',
-                                     yformatter = '%.0f').opts(height = 500, 
+                                     y = crypto,
+                                     yformatter = '%.0f').opts(width = 750,height = 250, 
                                                                xlabel = 'Date', 
                                                                ylabel = '$ (USD)')
     
-    # Create second plot for fear greed secondary axis
-    fg_plot = data.hvplot.line(x = 'Date', 
-                                     y = 'Moving Avg FG Index',
-                                     yformatter = '%.0f').opts(height = 500, 
+    crypto_two_plt = data.hvplot.line(x = 'Date', 
+                                     y = crypto_two,
+                                     yformatter = '%.0f').opts(width = 750,height = 250, 
                                                                xlabel = 'Date', 
-                                                               ylabel = 'Fear Greed Value')
+                                                               ylabel = '$ (USD)')
     
     # Return the figure
-    return crypto_plt + fg_plot
+    return crypto_plt + crypto_two_plt
+
+# Create function that returns
+def create_covid_map(data, year, color):
+    
+    # Create the map
+    covid_map = px.scatter_mapbox(
+        data[data['date'] == year],
+        lat = "Latitude",
+        lon = "Longitude",
+        size = "Cases",
+        color_discrete_sequence = [color],
+        zoom = 4,
+        mapbox_style = 'dark',
+        hover_data = data[['Country','Cases','Deaths']],
+        width = 950,
+        title = "Global Covid-19 Cases by Country " + '(' + str(year) + ')'
+        )
+
+    #Adjust pitch and bearing to adjust the rotation
+    covid_map.update_layout(margin = {"r":0,"t":0,"l":0,"b":0}, 
+                  mapbox = dict(
+                      pitch = 60,
+                      bearing = 30
+                  ))
+
+    # Display the map
+    return covid_map
+
+# Create economic impacts map
+def create_economic_map(data, eco_indicator):
+    
+    # Create the map
+    eco_map = px.scatter_mapbox(
+        data,
+        lat = "Latitude",
+        lon = "Longitude",
+        size = eco_indicator,
+        color = 'Impact',
+        zoom = 4,
+        mapbox_style = 'dark',
+        hover_data = data[['Country','Change in GDP (Year on Year)','Change in Inflation Rate (Year on Year)']],
+        width = 950,
+        title = "Impact of Covid 19 on GDP Per Capita Growth"
+        )
+
+    #Adjust pitch and bearing to adjust the rotation
+    eco_map.update_layout(margin = {"r":0,"t":0,"l":0,"b":0}, 
+                  mapbox = dict(
+                      pitch = 60,
+                      bearing = 30
+                  ))
+
+    # Display the map
+    return eco_map
+
+# Define a function that creates a correlation heatmamp between cryptocurrencies and the FG crypto index
+def correlation_feargreed_crpyto(data):
+    
+    # Establish correlation between multiple asset classes and fear greed index
+    data = data[['Bitcoin','Ethereum','S&P 500','Fear and Greed Value']].corr()
+    
+    # Create heatmap
+    corr_matrix = sns.heatmap(data, annot=True).\
+                    set_title("Correlation Between Fear & Greed Index and various assets", 
+                              fontdict= { 'fontsize': 18, 'fontweight':'bold'})
+    
+    # Return plot
+    return corr_matrix
